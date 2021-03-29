@@ -7,7 +7,7 @@ import math
 #Width and height of the eclipse
 W = 0.8
 H = 0.8
-n = 0.2
+n = 0.5     #Can only be modify in [0.1, 5.0]
 
 def InitGL():
     glClearColor(0.0, 0.0, 0.0, 0.0)
@@ -22,6 +22,7 @@ def keyPressed(*args):
         n += 0.1
     if args[0] == GLUT_KEY_DOWN and n >= 0.2:
         n -= 0.1
+    n = round(n, 1)
     print(n)
 
 

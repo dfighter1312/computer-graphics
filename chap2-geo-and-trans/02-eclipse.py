@@ -25,6 +25,8 @@ def keyPressed(*args):
         W += 0.1
     if args[0] == GLUT_KEY_LEFT and W >= 0.2:
         W -= 0.1
+    H = round(H, 1)
+    W = round(W, 1)
     print(H, W)
 
 
@@ -55,7 +57,7 @@ def draw_eclipse():
 
     glBegin(GL_LINE_LOOP)
     glColor3f(1.0, 1.0, 1.0)
-    for t in np.arange(0, 2 * math.pi + math.pi / 100, math.pi / 100):
+    for t in np.arange(0, 2*math.pi + math.pi / 100, math.pi / 100):
         x = W * math.cos(t)
         y = H * math.sin(t)
         glVertex2f(x, y)
@@ -78,7 +80,7 @@ def main():
     glutInitWindowSize(480, 480)
     glutInitWindowPosition(0, 0)
     
-    window = glutCreateWindow("Line")
+    window = glutCreateWindow("Eclipse")
 
     glutDisplayFunc(display)
     glutIdleFunc(display)

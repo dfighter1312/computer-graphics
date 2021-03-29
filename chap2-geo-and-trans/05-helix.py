@@ -5,7 +5,6 @@ import numpy as np
 import math
 
 angle = 0
-end = 10
 
 def InitGL():
     glClearColor(0.0, 0.0, 0.0, 0.0)
@@ -56,19 +55,34 @@ def draw_helix():
     """
     global end
 
-    b = 0.05
+    b = 0.2
     R = 0.5
-    end += 0.01
+    pipeR = 0.15
+    point = list()
 
-    glBegin(GL_LINE_STRIP)
-    glColor3f(1.0, 1.0, 1.0)
-    for t in np.arange(0, end, 0.01):
+    for t in np.arange(0, 50, 0.5):
         x = R * math.cos(t)
         y = R * math.sin(t)
         z = b * t
-        glVertex3f(x, y, z)
+        point.append(plot_circle((x, y, z), pipeR))
+    
+    glColor3f(1.0, 1.0, 1.0)
+    for i in range(len(point) - 1):
+        glBegin(GL_TRIANGLE_STRIP)
+        for j in range(len(point[i])):
+            glVertex3f(*point[i+1][j])
+            glVertex3f(*point[i][j])
+        glVertex3f(*point[i+1][0])
+        glEnd()
 
-    glEnd()
+def plot_circle(point, radius):
+    point_lst = list()
+    for theta in np.arange(0, (2+1/6)*math.pi, math.pi/6):
+        x = radius * math.cos(theta) + point[0]
+        y = radius * math.sin(theta) + point[1]
+        z = point[2]
+        point_lst.append((x, y, z))
+    return point_lst
 
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -76,9 +90,10 @@ def display():
     glLoadIdentity()
     gluLookAt(0.7, 0.5, 0.3, 0, 0, 0, 0, 1, 0)
     glRotatef(angle, 0, 1, 0)
+    
     draw_coor()
     draw_helix()
-    
+
     glFlush()
 
 def main():
@@ -89,7 +104,7 @@ def main():
     glutInitWindowSize(720, 720)
     glutInitWindowPosition(0, 0)
     
-    window = glutCreateWindow("Line")
+    window = glutCreateWindow("Helix")
 
     glutDisplayFunc(display)
     glutIdleFunc(display)

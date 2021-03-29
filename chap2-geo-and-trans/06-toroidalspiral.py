@@ -4,11 +4,9 @@ from OpenGL.GLUT import *
 import numpy as np
 import math
 
-angle = 0
-
-X_AXIS = 0.0
-Y_AXIS = 0.0
-Z_AXIS = 0.0
+X_AXIS = -90.0
+Y_AXIS = -90.0
+Z_AXIS = -90.0
 
 def InitGL():
     glClearColor(0.0, 0.0, 0.0, 0.0)
@@ -55,21 +53,38 @@ def draw_coor():
 
 def draw_helix():
     """
-    Draw the helix.
+    Draw the shape.
     """
     a = 0.5
     b = 1
-    c = 10
+    c = 8
+    pipeR = 0.1
 
-    glBegin(GL_LINE_STRIP)
-    glColor3f(1.0, 1.0, 1.0)
-    for t in np.arange(0, 40, 0.01):
+    point = list()
+
+    for t in np.arange(0, 10, 0.02):
         x = (a*math.sin(c*t) + b) * math.cos(t)
         y = (a*math.sin(c*t) + b) * math.sin(t)
         z = a * math.cos(c*t)
-        glVertex3f(x, y, z)
+        point.append(plot_circle((x, y, z), pipeR))
+    
+    glColor3f(1.0, 1.0, 1.0)
+    for i in range(len(point) - 1):
+        glBegin(GL_TRIANGLE_STRIP)
+        for j in range(len(point[i])):
+            glVertex3f(*point[i+1][j])
+            glVertex3f(*point[i][j])
+        glVertex3f(*point[i+1][0])
+        glEnd()
 
-    glEnd()
+def plot_circle(point, radius):
+    point_lst = list()
+    for theta in np.arange(0, 2*math.pi, math.pi/6):
+        x = radius * math.cos(theta) + point[0]
+        y = radius * math.sin(theta) + point[1]
+        z = point[2]
+        point_lst.append((x, y, z))
+    return point_lst
 
 def display():
     global X_AXIS, Y_AXIS, Z_AXIS
@@ -83,7 +98,6 @@ def display():
     glRotatef(Z_AXIS,0.0,0.0,1.0)
     draw_coor()
     draw_helix()
-    
     X_AXIS -= 0.3
     Y_AXIS -= 0.3
     Z_AXIS -= 0.3
@@ -98,7 +112,7 @@ def main():
     glutInitWindowSize(720, 720)
     glutInitWindowPosition(0, 0)
     
-    window = glutCreateWindow("Line")
+    window = glutCreateWindow("Roroidal Spiral")
 
     glutDisplayFunc(display)
     glutIdleFunc(display)
