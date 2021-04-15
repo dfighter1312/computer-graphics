@@ -16,11 +16,17 @@ class Plane:
         p, v = line
         dot1 = dot(self.normal, p)
         dot2 = dot(self.normal, v)
+        
         # If denominator=0, no intersect
         if(dot2 == 0):
             return (None, None, None)
         t = -(dot1 + self.d) / dot2
-        return p + (v * t)
+
+        res = list()
+        res.append(p[0] + v[0]*t)
+        res.append(p[1] + v[1]*t)
+        res.append(p[2] + v[2]*t)
+        return res
 
 def dot(vector1, vector2):
     return vector1[0] * vector2[0] + vector1[1] * vector2[1] + vector1[2] * vector2[2]
