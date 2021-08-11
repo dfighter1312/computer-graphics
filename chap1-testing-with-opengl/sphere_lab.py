@@ -17,13 +17,28 @@ def InitGL(Width, Height):
  
     glClearColor(0.0, 0.0, 0.0, 0.0)
     glClearDepth(1.0) 
-    glDepthFunc(GL_LESS)
-    glEnable(GL_DEPTH_TEST)  
-    glMatrixMode(GL_PROJECTION)
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+    glDepthFunc(GL_LESS)
+    glEnable(GL_DEPTH_TEST)
+    
+    diffuse0 = [0.5, 0.5, 0.5, 1.0]
+    ambient0 = [1.0, 0.0, 0.0, 1.0]
+    specular0 = [1.0, 0.0, 0.0, 1.0]
+    light0_pos = [0.0, 1.0, -1.0, 1.0]
+
+    glEnable(GL_LIGHTING)
+    glEnable(GL_LIGHT0)
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_pos)
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient0)
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse0)
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specular0)
+
+    glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
+    # glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0)
     glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
 
 def find_sphere_vertex():             
     vertex_data = []
@@ -40,6 +55,18 @@ def find_sphere_vertex():
                              math.sin(phir20)))
     return vertex_data
 
+def special(*key):
+    global X_AXIS,Y_AXIS,Z_AXIS
+    # Scale the sphere up or down
+    if key[0] == GLUT_KEY_UP:
+        Y_AXIS += 5
+    if key[0] == GLUT_KEY_DOWN:
+        Y_AXIS -= 5
+
+    if key[0] == GLUT_KEY_LEFT:
+        X_AXIS += 5
+    if key[0] == GLUT_KEY_RIGHT:
+        X_AXIS -= 5
 
 def sphere():
     global X_AXIS,Y_AXIS,Z_AXIS
@@ -56,21 +83,14 @@ def sphere():
 
     data = find_sphere_vertex()
 
-    r = 1.0
-    g = 0.0
-    b = 0.0
     glBegin(GL_TRIANGLE_STRIP)
+    glColor3f(1.0, 1.0, 1.0)
     for vertex in data:
-        r -= 0.001
-        g += 0.002
-        b += 0.001
-        glColor3f(r, g, b)
         glVertex3f(vertex[0], vertex[1], vertex[2])
     glEnd()
     
-    X_AXIS = X_AXIS - 0.05
-    Z_AXIS = Z_AXIS - 0.05
- 
+    # Y_AXIS = Y_AXIS - 0.5
+
     glutSwapBuffers()
 
 def main():
@@ -80,8 +100,9 @@ def main():
     glutInitWindowSize(640, 480) #Set the width and height of your window
     glutInitWindowPosition(0, 0) #Set the position at which this window should appear
     window = glutCreateWindow("OpenGL Sphere") #Set the window title
-    glutDisplayFunc(sphere) #Tell OpenGL to call the showScreen method continuously
+    glutDisplayFunc(sphere) #Tell OpenGL to call the sphere method continuously
     glutIdleFunc(sphere)  #Keeps the window open
+    glutSpecialFunc(special) #Special function for key events
     InitGL(640, 480)
     glutMainLoop()      #Keeps the above created window displaying/running in a loop
 

@@ -55,7 +55,7 @@ class Sphere:
 
         # Set background color to black
         glClearColor(0.0, 0.0, 0.0, 0.0)
-
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         self.compute_location()
 
         # Set OpenGL parameters
