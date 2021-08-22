@@ -41,7 +41,7 @@ def display():
     printModelViewMatrix()
     drawGrid()
 
-    gluPerspective(45.0, 1.0, 0.1, 100.0)
+    gluLookAt(1.7913248,  -8.6700163,   0.36894994, 1,3,4, 0,1,0)
     print("In line 11")
     printModelViewMatrix()
     glRotatef(45.0, 0.0, 0.0, 1.0)
